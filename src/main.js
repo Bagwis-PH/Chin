@@ -91,6 +91,12 @@ function startCamera(deviceId) {
               setHandTarget(handData.x, handData.y, 'navigate', handData.z); 
             } else if (stableGesture === "Closed_Fist") {
               setHandTarget(handData.x, handData.y, 'fist', handData.z); 
+            } else if (stableGesture === "Zero" || stableGesture === "0") {
+              // Zero hand sign: behave like text but show "sorry na"
+              setHandTarget(handData.x, handData.y, 'zero', handData.z);
+            } else if (stableGesture === "Three" || stableGesture === "3" || stableGesture === "OK" || stableGesture === "Okay") {
+              // Three/OK sign: behave like text but show "mwa2x bb"
+              setHandTarget(handData.x, handData.y, 'three', handData.z);
             } else {
               setHandTarget(0, 0, 'scatter', handData.z); 
             }
