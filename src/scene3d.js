@@ -119,7 +119,6 @@ export function initScene(container) {
     scene.add(particleMesh);
   });
 
-  // Initialize burst particle system
   createBurstSystem();
 
   window.addEventListener('resize', () => {
@@ -172,7 +171,6 @@ function createBurstSystem() {
   scene.add(burstMesh);
   burstSystems.push(burstMesh);
 
-  // Initialize burst particles data
   for (let i = 0; i < burstCount; i++) {
     burstParticles.push({
       active: false,
@@ -203,9 +201,8 @@ function generateTextVertices(text, isHeart = false) {
   ctx.textBaseline = 'middle';
   
   if (isHeart) {
-    // Draw a heart shape
     const cx = canvas.width / 2;
-    const cy = canvas.height / 2 - 20;
+    const cy = canvas.height / 2 + 10;
     const scale = 3.5;
     
     ctx.beginPath();
@@ -214,7 +211,6 @@ function generateTextVertices(text, isHeart = false) {
     ctx.bezierCurveTo(cx + 100 * scale, cy - 20 * scale, cx + 50 * scale, cy - 70 * scale, cx, cy - 30 * scale);
     ctx.fill();
   } else {
-    // Draw text
     ctx.font = 'bold 80px Arial';
     ctx.fillText(text, canvas.width / 2, canvas.height / 2);
   }
@@ -256,28 +252,30 @@ function generateTextVertices(text, isHeart = false) {
 }
 
 function generateCombinedILoveYou() {
-  // Generate "I LOVE YOU" text
   const textCanvas = document.createElement('canvas');
   const textCtx = textCanvas.getContext('2d', { willReadFrequently: true });
   textCanvas.width = 800;
-  textCanvas.height = 400;
+  textCanvas.height = 400; // The true center is Y = 200
   
   textCtx.fillStyle = 'white';
   textCtx.font = 'bold 65px Arial';
   textCtx.textAlign = 'center';
   textCtx.textBaseline = 'middle';
-  textCtx.fillText("I LOVE YOU", textCanvas.width / 2, 80);
   
-  // Draw heart beneath
+  // Place text cleanly above the center line
+  textCtx.fillText("I LOVE YOU", textCanvas.width / 2, 130);
+  
+  // Place heart cleanly underneath the center line, point facing down
   const cx = textCanvas.width / 2;
-  const cy = 180;
-  const scale = 1;
+  const cy = 250; 
+  const scale = 1.2;
     
-    textCtx.beginPath();
-    textCtx.moveTo(cx, cy + 30 * scale);
-    textCtx.bezierCurveTo(cx - 50 * scale, cy + 70 * scale, cx - 100 * scale, cy + 20 * scale, cx, cy - 30 * scale);
-    textCtx.bezierCurveTo(cx + 100 * scale, cy + 20 * scale, cx + 50 * scale, cy + 70 * scale, cx, cy + 30 * scale);
-    textCtx.fill();
+  textCtx.beginPath();
+  // Fixed right-side-up heart
+  textCtx.moveTo(cx, cy - 30 * scale); // Top cleft
+  textCtx.bezierCurveTo(cx - 50 * scale, cy - 70 * scale, cx - 100 * scale, cy - 20 * scale, cx, cy + 30 * scale); // Left side to bottom tip
+  textCtx.bezierCurveTo(cx + 100 * scale, cy - 20 * scale, cx + 50 * scale, cy - 70 * scale, cx, cy - 30 * scale); // Right side back to cleft
+  textCtx.fill();
   
   const imageData = textCtx.getImageData(0, 0, textCanvas.width, textCanvas.height).data;
   const validPixels = [];
@@ -316,8 +314,6 @@ function generateCombinedILoveYou() {
 function triggerHeartBeat() {
   isBeating = true;
   beatStrength = 1.0;
-  
-  // Emit burst particles from heart center
   emitBurst();
 }
 
@@ -329,9 +325,10 @@ function emitBurst() {
   const positions = burstMesh.geometry.attributes.position.array;
   const sizes = burstMesh.geometry.attributes.size.array;
 
-  // Heart center position (relative to "I LOVE YOU" text)
-  const heartCenterX = 0;
-  const heartCenterY = -35; // Below the text
+  // Accurately targeting the mathematical center of the heart from the canvas
+  // Center is Y=200, Heart is Y=250 -> Difference is -50. Scale is 0.35 -> -17.5
+  const heartCenterX = 0
+  const heartCenterY = -17.5; 
 
   for (let i = 0; i < burstParticles.length; i++) {
     const p = burstParticles[i];
@@ -339,7 +336,6 @@ function emitBurst() {
     p.life = 0;
     p.maxLife = 0.5 + Math.random() * 1.0;
     
-    // Random direction from heart center
     const theta = Math.random() * Math.PI * 2;
     const phi = Math.acos(2 * Math.random() - 1);
     const speed = 15 + Math.random() * 35;
@@ -387,17 +383,14 @@ function updateBurst() {
         continue;
       }
 
-      // Move particles with slight gravity pull back
       p.x += p.vx * 0.02;
       p.y += p.vy * 0.02;
       p.z += p.vz * 0.02;
       
-      // Slow down slightly
       p.vx *= 0.995;
       p.vy *= 0.995;
       p.vz *= 0.995;
       
-      // Fade out
       const fade = 1 - lifeRatio;
       const sizeFade = fade * 4;
       
@@ -407,7 +400,6 @@ function updateBurst() {
       
       sizes[i] = sizeFade;
       
-      // Bright red that fades to dark red
       colors[i * 3] = 1;
       colors[i * 3 + 1] = 0.05 + 0.2 * (1 - fade);
       colors[i * 3 + 2] = 0.05 + 0.2 * (1 - fade);
@@ -473,7 +465,6 @@ export function setHandTarget(x, y, actionType, z = 0) {
       currentTextString = targetString;
     }
     
-    // Hide burst particles
     burstSystems.forEach(burst => {
       burst.visible = false;
       burst.material.opacity = 0;
@@ -481,8 +472,9 @@ export function setHandTarget(x, y, actionType, z = 0) {
     burstParticles.forEach(p => p.active = false);
     
   } else if (mode === 'ily') {
-    targetOffsetX = (x - 0.5) * 250;
-    targetOffsetY = (y - 0.5) * 150;
+    // Force to exact center immediately, ignoring hand drag
+    targetOffsetX = 0;
+    targetOffsetY = 0;
     
     if (bloomPass) {
       bloomPass.strength = 0.4;
@@ -496,7 +488,6 @@ export function setHandTarget(x, y, actionType, z = 0) {
       currentTextString = targetString;
     }
 
-    // Trigger heartbeat when showing "I LOVE YOU"
     if (!isBeating) {
       triggerHeartBeat();
     }
@@ -505,7 +496,6 @@ export function setHandTarget(x, y, actionType, z = 0) {
     targetOffsetY = 0;
     textPositions = [];
     currentTextString = "";
-    // Hide burst particles when leaving ily mode
     burstSystems.forEach(burst => {
       burst.visible = false;
       burst.material.opacity = 0;
@@ -521,17 +511,16 @@ function animate() {
 
   currentOffsetX += (targetOffsetX - currentOffsetX) * 0.1;
   currentOffsetY += (targetOffsetY - currentOffsetY) * 0.1;
-  
   currentScale += (targetScale - currentScale) * 0.15;
 
-  // Heart beat animation
+  // Single Source Heart beat animation
   if (mode === 'ily') {
-    // Natural heartbeat rhythm - every 1.5 seconds
-    if (time % 1.5 < 0.1 && !isBeating) {
+    heartbeatTimer += 0.02;
+    if (heartbeatTimer >= 1.5) {
       triggerHeartBeat();
+      heartbeatTimer = 0;
     }
 
-    // Beat expansion/contraction
     if (isBeating) {
       beatStrength *= 0.95;
       if (beatStrength < 0.01) {
@@ -539,10 +528,7 @@ function animate() {
         isBeating = false;
       }
     }
-  }
-
-  // Update burst particles
-  if (mode === 'ily') {
+    
     updateBurst();
   }
 
@@ -575,22 +561,15 @@ function animate() {
       } else if ((mode === 'text' || mode === 'ily') && textPositions.length > 0) {
         const targetPos = textPositions[gIdx % textPositions.length];
         
-        // Get heartbeat expansion factor
         let heartBeatScale = 1;
         if (mode === 'ily') {
-          // Natural expansion: 5% expansion during beat
-          const beatPulse = Math.sin(time * 4) * 0.05 + 1;
-          heartBeatScale = 1 + (beatPulse - 1) * (1 - beatStrength * 0.5);
-          // Additional contraction after beat
-          if (isBeating) {
-            heartBeatScale *= 1 + beatStrength * 0.2;
-          }
+          // Relies strictly on beatStrength (only 1 pulse source)
+          heartBeatScale = 1 + (beatStrength * 0.15); 
         }
         
         const floatX = Math.cos(time * 1.5 + gIdx * 0.1) * 1.5;
         const floatY = Math.sin(time * 1.5 + gIdx * 0.1) * 1.5;
 
-        // Apply heart beat scale to the text positions
         tx = targetPos.x * heartBeatScale + currentOffsetX + floatX;
         ty = targetPos.y * heartBeatScale + currentOffsetY + floatY;
         tz = targetPos.z;
