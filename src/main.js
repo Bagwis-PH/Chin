@@ -2,16 +2,26 @@ import './style.css';
 import { initScene, morphToPeace } from './scene3d.js';
 import { initTracking } from './tracking.js';
 
-// Grab the video element from index.html
 const videoElement = document.getElementById('webcam');
 
-// Start the 3D particle scene
-initScene(document.body);
+// Ask for webcam access
+navigator.mediaDevices.getUserMedia({ video: true })
+  .then((stream) => {
+    videoElement.srcObject = stream;
 
-// Start gesture tracking
-initTracking(videoElement, (gesture) => {
-  console.log("Gesture detected:", gesture);
-  if (gesture === "Victory") {
-    morphToPeace(); // trigger particle morph into "PEACE"
-  }
-});
+    // Start the 3D particle scene
+    initScene(document.body);
+
+    // Start gesture tracking once the video is ready
+    videoElement.onloadedmetadata = () => {
+      initTracking(videoElement, (gesture) => {
+        console.log("Gesture detected:", gesture);
+        if (gesture === "Victory") {
+          morphToPeace();
+        }
+      });
+    };
+  })
+  .catch((err) => {
+    console.error("Webcam access denied:", err);
+  });
