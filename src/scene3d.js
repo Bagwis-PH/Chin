@@ -461,8 +461,8 @@ export function setHandTarget(x, y, actionType, z = 0) {
     }
     
     // Determine which string to show based on the specific mode
-    let targetString = "PEACE"; // Default fallback
-    if (mode === 'text') targetString = "PEACE";
+    let targetString = "naa rko"; // Default fallback
+    if (mode === 'text') targetString = "naa rko";
     else if (mode === 'zero') targetString = "sorry na";
     else if (mode === 'three') targetString = "mwa2x bb";
 
