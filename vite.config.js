@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 
 export default defineConfig({
-  base: '/dynamic-particles-3d/',
+  base: '/Chin/',
   build: {
     outDir: 'dist',
   }
