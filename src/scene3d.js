@@ -58,10 +58,10 @@ export function initScene(container) {
   const textureLoader = new THREE.TextureLoader();
 
   const textures = [
-    textureLoader.load('/glow.png'),
-    textureLoader.load('/glow2.png'),
-    textureLoader.load('/glow3.png'),
-    textureLoader.load('/glow4.png')
+  textureLoader.load('/Chin/glow.png'),
+  textureLoader.load('/Chin/glow2.png'),
+  textureLoader.load('/Chin/glow3.png'),
+  textureLoader.load('/Chin/glow4.png')
   ];
 
   const totalParticles = 5000;
@@ -153,7 +153,7 @@ function createBurstSystem() {
   geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
   const textureLoader = new THREE.TextureLoader();
-  const glowTexture = textureLoader.load('/glow.png');
+  const glowTexture = textureLoader.load('/Chin/glow.png');
 
   const material = new THREE.PointsMaterial({
     size: 2,
