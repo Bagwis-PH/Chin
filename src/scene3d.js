@@ -140,7 +140,7 @@ function createBurstSystem() {
 
   for (let i = 0; i < burstCount; i++) {
     positions[i * 3] = 0;
-    positions[i * 3 + 1] = 0;
+    positions[i * 3 + 1] = -17.5; //fixing the center of the heart 
     positions[i * 3 + 2] = 0;
     colors[i * 3] = 1;
     colors[i * 3 + 1] = 0;
@@ -376,8 +376,8 @@ function updateBurst() {
       
       if (lifeRatio >= 1) {
         p.active = false;
-        positions[i * 3] = 0;
-        positions[i * 3 + 1] = 0;
+        positions[i * 3] = 0 + currentOffsetX;
+        positions[i * 3 + 1] = -17.5 + currentOffsetY; // Reset to heart center
         positions[i * 3 + 2] = 0;
         sizes[i] = 0;
         continue;
@@ -404,8 +404,8 @@ function updateBurst() {
       colors[i * 3 + 1] = 0.05 + 0.2 * (1 - fade);
       colors[i * 3 + 2] = 0.05 + 0.2 * (1 - fade);
     } else {
-      positions[i * 3] = 0;
-      positions[i * 3 + 1] = 0;
+      positions[i * 3] = 0 + currentOffsetX;
+      positions[i * 3 + 1] = -17.5 + currentOffsetY; // Reset to heart center
       positions[i * 3 + 2] = 0;
       sizes[i] = 0;
     }
@@ -472,9 +472,9 @@ export function setHandTarget(x, y, actionType, z = 0) {
     burstParticles.forEach(p => p.active = false);
     
   } else if (mode === 'ily') {
-    // Force to exact center immediately, ignoring hand drag
-    targetOffsetX = 0;
-    targetOffsetY = 0;
+    // added hand drag but the center does not follow fastly
+    targetOffsetX = (x - 0.5) * 250;
+    targetOffsetY = (y - 0.5) * 150;
     
     if (bloomPass) {
       bloomPass.strength = 0.4;
