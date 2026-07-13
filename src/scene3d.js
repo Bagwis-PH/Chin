@@ -438,8 +438,7 @@ export function setHandTarget(x, y, actionType, z = 0) {
 
   mode = actionType;
 
-  // Treat zero/three like text/ily for bloom handling
-  if (bloomPass && mode !== 'text' && mode !== 'ily' && mode !== 'zero' && mode !== 'three') {
+  if (bloomPass && mode !== 'text' && mode !== 'ily') {
     bloomPass.strength = 2.5;
     bloomPass.radius = 1.2;
   }
@@ -492,50 +491,6 @@ export function setHandTarget(x, y, actionType, z = 0) {
     if (!isBeating) {
       triggerHeartBeat();
     }
-  } else if (mode === 'zero') {
-    // Zero sign: show "sorry na" similar to PEACE
-    targetOffsetX = (x - 0.5) * 250;
-    targetOffsetY = (y - 0.5) * 150;
-
-    if (bloomPass) {
-      bloomPass.strength = 0.4;
-      bloomPass.radius = 0.2;
-    }
-
-    const targetString = "sorry na";
-
-    if (currentTextString !== targetString || textPositions.length === 0) {
-      textPositions = generateTextVertices(targetString, false);
-      currentTextString = targetString;
-    }
-
-    burstSystems.forEach(burst => {
-      burst.visible = false;
-      burst.material.opacity = 0;
-    });
-    burstParticles.forEach(p => p.active = false);
-  } else if (mode === 'three') {
-    // Three/OK sign: show "mwa2x bb"
-    targetOffsetX = (x - 0.5) * 250;
-    targetOffsetY = (y - 0.5) * 150;
-
-    if (bloomPass) {
-      bloomPass.strength = 0.4;
-      bloomPass.radius = 0.2;
-    }
-
-    const targetString = "mwa2x bb";
-
-    if (currentTextString !== targetString || textPositions.length === 0) {
-      textPositions = generateTextVertices(targetString, false);
-      currentTextString = targetString;
-    }
-
-    burstSystems.forEach(burst => {
-      burst.visible = false;
-      burst.material.opacity = 0;
-    });
-    burstParticles.forEach(p => p.active = false);
   } else {
     targetOffsetX = 0;
     targetOffsetY = 0;
