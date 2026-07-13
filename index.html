@@ -3,12 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <title>Gesture Particles</title>
+    <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
-    <!-- Webcam feed -->
-    <video id="webcam" autoplay playsinline style="display:none;"></video>
+    <!-- ===== RADIANT UNIVERSE LAYERS ===== -->
+    <div class="glow-orb glow-orb--1"></div>
+    <div class="glow-orb glow-orb--2"></div>
+    <div class="glow-orb glow-orb--3"></div>
+    <div class="stars"></div>
+    <div class="ring-glow"></div>
 
-    <!-- Vite will inject your JS bundle here -->
+    <!-- ===== CAMERA SELECTOR & DEBUGGER ===== -->
+    <select id="cameraSelect">
+      <option value="">Loading cameras...</option>
+    </select>
+    
+    <!-- NEW: Hard Reset Engine Button -->
+    <button id="resetBtn">Reset Engine</button>
+
+    <!-- Webcam feed visible -->
+    <video id="webcam" autoplay playsinline></video>
+
+    <!-- Vite injects your JS bundle -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
