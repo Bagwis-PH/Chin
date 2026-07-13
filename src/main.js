@@ -82,7 +82,7 @@ function startCamera(deviceId) {
               stableGesture = incomingGesture;
             }
 
-            // ACTION HUB: Now passes handData.z for depth tracking
+            // ACTION HUB: Now catches 'Zero' and 'Three'
             if (stableGesture === "Victory") {
               setHandTarget(handData.x, handData.y, 'text', handData.z);
             } else if (stableGesture === "ILoveYou") {
@@ -91,6 +91,10 @@ function startCamera(deviceId) {
               setHandTarget(handData.x, handData.y, 'navigate', handData.z); 
             } else if (stableGesture === "Closed_Fist") {
               setHandTarget(handData.x, handData.y, 'fist', handData.z); 
+            } else if (stableGesture === "Zero") {
+              setHandTarget(handData.x, handData.y, 'zero', handData.z); 
+            } else if (stableGesture === "Three") {
+              setHandTarget(handData.x, handData.y, 'three', handData.z); 
             } else {
               setHandTarget(0, 0, 'scatter', handData.z); 
             }

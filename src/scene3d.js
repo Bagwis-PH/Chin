@@ -438,7 +438,8 @@ export function setHandTarget(x, y, actionType, z = 0) {
 
   mode = actionType;
 
-  if (bloomPass && mode !== 'text' && mode !== 'ily') {
+  // Prevent bloom from resetting when in any text-based mode or 'ily'
+  if (bloomPass && !['text', 'ily', 'zero', 'three'].includes(mode)) {
     bloomPass.strength = 2.5;
     bloomPass.radius = 1.2;
   }
@@ -449,7 +450,8 @@ export function setHandTarget(x, y, actionType, z = 0) {
   } else if (mode === 'fist') {
     targetOffsetX = (x - 0.5) * 150;
     targetOffsetY = (y - 0.5) * 100;
-  } else if (mode === 'text') {
+  } else if (['text', 'zero', 'three'].includes(mode)) {
+    // Grouped logic for all hand signs that generate floating text
     targetOffsetX = (x - 0.5) * 250;
     targetOffsetY = (y - 0.5) * 150;
     
@@ -458,7 +460,11 @@ export function setHandTarget(x, y, actionType, z = 0) {
       bloomPass.radius = 0.2;
     }
     
-    const targetString = "PEACE";
+    // Determine which string to show based on the specific mode
+    let targetString = "PEACE"; // Default fallback
+    if (mode === 'text') targetString = "PEACE";
+    else if (mode === 'zero') targetString = "sorry na";
+    else if (mode === 'three') targetString = "mwa2x bb";
 
     if (currentTextString !== targetString || textPositions.length === 0) {
       textPositions = generateTextVertices(targetString, false);
@@ -541,7 +547,8 @@ function animate() {
       let tx, ty, tz;
       const gIdx = globalParticleIndex;
       
-      const isBackground = ((mode === 'text' || mode === 'ily') && gIdx > 3500);
+      // Update background check to include the new modes
+      const isBackground = (['text', 'ily', 'zero', 'three'].includes(mode) && gIdx > 3500);
 
       if (mode === 'scatter' || mode === 'navigate' || isBackground) {
         basePositions[gIdx * 3 + 2] += 0.4;
@@ -558,7 +565,8 @@ function animate() {
         ty = basePositions[gIdx * 3 + 1] + currentOffsetY;
         tz = basePositions[gIdx * 3 + 2];
         
-      } else if ((mode === 'text' || mode === 'ily') && textPositions.length > 0) {
+      // Update particle target check to include the new modes
+      } else if (['text', 'ily', 'zero', 'three'].includes(mode) && textPositions.length > 0) {
         const targetPos = textPositions[gIdx % textPositions.length];
         
         let heartBeatScale = 1;
